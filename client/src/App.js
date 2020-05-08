@@ -4,11 +4,24 @@ import axios from 'axios';
 
 import SavedList from './Movies/SavedList';
 import MovieList from './Movies/MovieList';
-//import Movie from './Movie';
+import Movie from './Movies/Movie';
 
-const App = () => {
+const App = (props) => {
   const [savedList, setSavedList] = useState([]);
   const [movieList, setMovieList] = useState([]);
+
+  return (
+    <div>
+    <SavedList list ={savedList} />
+    <Route exact path="/">
+      <MovieList movies={movieList} />
+    </Route>
+    <Route path="/movies/:movieId">
+      <Movie />
+    </Route>
+    </div>
+  );
+};
 
   useEffect(() => {
     const getMovies = () => {
@@ -42,6 +55,6 @@ const App = () => {
 
 
   )
-  };
+  
 
 export default App;
