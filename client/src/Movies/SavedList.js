@@ -1,16 +1,23 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 
-const SavedList = props => (
-  <div className="saved-list">
-    <h3>Saved Movies:</h3>
-    {props.list.map(movie => (
-      <span className="saved-movie">{movie.title}</span>
-    ))}
-    <Link to ="/">
-    <div className="home-button">Home</div>
-    </Link>
-  </div>
-);
 
-export default SavedList;
+export default class SavedList extends Component {
+  const(props) {
+    //super(props);
+  }
+
+  render() {
+    return (
+      <div className="saved-list">
+        <h3>Saved Movies:</h3>
+        {this.props.list.map(movie => (
+          <span className="saved-movie">{movie.title}</span>
+        ))}
+        <Link to="/" className="home-button">
+          Home
+        </Link>
+      </div>
+    );
+  }
+}

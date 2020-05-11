@@ -1,60 +1,48 @@
-import React, { useState, useEffect } from 'react';
+import React, { Component } from "react";
 import { Route } from "react-router-dom";
-import axios from 'axios';
 
-import SavedList from './Movies/SavedList';
-import MovieList from './Movies/MovieList';
-import Movie from './Movies/Movie';
+import SavedList from "./Movies/SavedList";
+import MovieList from "./Movies/MovieList";
+import Movie from "./Movies/Movie";
 
-const App = (props) => {
-  const [savedList, setSavedList] = useState([]);
-  const [movieList, setMovieList] = useState([]);
+export default class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      savedList: [],
+      movieInList: null
+    };
+  }
 
-  return (
-    <div>
-    <SavedList list ={savedList} />
-    <Route exact path="/">
-      <MovieList movies={movieList} />
-    </Route>
-    <Route path="/movies/:movieId">
-      <Movie />
-    </Route>
-    </div>
-  );
-};
-
-  useEffect(() => {
-    const getMovies = () => {
-      axios
-        .get('http://localhost:5000/api/movies')
-        .then(response => {
-          setMovieList(response.data);
-        })
-        .catch(error => {
-          console.error('Server Error', error);
-        });
+  addToSavedList = movie => {
+    const savedList = this.state.savedList;
+    const findMovie = savedList.find(el => movie.id === el.id);
+    if (findMovie) {
+      this.setState({ movieInList: `You've already saved that movie!` });
+      setTimeout(() => this.setState({ movieInList: null }), 2000);
+    } else {
+      savedList.push(movie);
     }
-    getMovies();
-  }, []);
 
-  const addToSavedList = movie => {
-    setSavedList([...savedList, movie]);
+    this.setState({ savedList });
   };
 
-  return (
-    <div>
-      <SavedList list={savedList} />
-      <div>Replace this Div with your Routes</div>
-
-    <Route>
-    <App />
-    </Route>
-    
-    </div>
-
-
-
-  )
-  
-
-export default App;
+  render() {
+    const { movieInList } = this.state;
+    return (
+      <div>
+        {movieInList !== null ? (
+          <h3 className="movie-warning">{movieInList}</h3>
+        ) : null}
+        <SavedList list={this.state.savedList} />
+        <Route exact path="/" component={MovieList} />
+        <Route
+          path="/movies/:id"
+          render={props => (
+            <Movie {...props} addToSavedList={this.addToSavedList} />
+          )}
+        />
+      </div>
+    );
+  }
+}
